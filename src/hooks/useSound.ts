@@ -20,9 +20,6 @@ export const useSound = () => {
 
   return {
     playSound: (soundName: string) => soundManager.playSound(soundName),
-    playBackgroundMusic: () => soundManager.playBackgroundMusic(),
-    stopBackgroundMusic: () => soundManager.stopBackgroundMusic(),
-    setMusicVolume: (volume: number) => soundManager.setMusicVolume(volume),
     setSfxVolume: (volume: number) => soundManager.setSfxVolume(volume)
   };
 };

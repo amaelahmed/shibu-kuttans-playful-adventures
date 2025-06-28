@@ -2,9 +2,7 @@
 class SoundManager {
   private audioContext: AudioContext | null = null;
   private sounds: { [key: string]: AudioBuffer } = {};
-  private musicVolume = 0.3;
   private sfxVolume = 0.5;
-  private currentMusic: AudioBufferSourceNode | null = null;
 
   constructor() {
     // Initialize audio context on first user interaction
@@ -82,57 +80,6 @@ class SoundManager {
     } catch (error) {
       console.log('Could not play sound:', error);
     }
-  }
-
-  // Play background music (simple melody loop)
-  playBackgroundMusic() {
-    if (!this.audioContext) return;
-
-    this.stopBackgroundMusic();
-
-    try {
-      // Create a simple cheerful melody
-      const melody = [523.25, 587.33, 659.25, 698.46, 783.99]; // C-D-E-F-G
-      let noteIndex = 0;
-
-      const playNote = () => {
-        if (!this.audioContext) return;
-
-        const oscillator = this.audioContext.createOscillator();
-        const gainNode = this.audioContext.createGain();
-
-        oscillator.frequency.setValueAtTime(melody[noteIndex], this.audioContext.currentTime);
-        oscillator.type = 'sine';
-        
-        gainNode.gain.setValueAtTime(this.musicVolume, this.audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.8);
-
-        oscillator.connect(gainNode);
-        gainNode.connect(this.audioContext.destination);
-
-        oscillator.start();
-        oscillator.stop(this.audioContext.currentTime + 0.8);
-
-        noteIndex = (noteIndex + 1) % melody.length;
-        
-        setTimeout(playNote, 1000);
-      };
-
-      playNote();
-    } catch (error) {
-      console.log('Could not play background music:', error);
-    }
-  }
-
-  stopBackgroundMusic() {
-    if (this.currentMusic) {
-      this.currentMusic.stop();
-      this.currentMusic = null;
-    }
-  }
-
-  setMusicVolume(volume: number) {
-    this.musicVolume = Math.max(0, Math.min(1, volume));
   }
 
   setSfxVolume(volume: number) {

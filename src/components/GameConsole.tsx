@@ -16,8 +16,8 @@ interface GameConsoleProps {
 const GameConsole = ({ onStartGame, onViewProgress, progress }: GameConsoleProps) => {
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
   const [shibuDialogue, setShibuDialogue] = useState("Hi there! I'm Shibu Kuttan, ready for some fun learning?");
-  const [musicEnabled, setMusicEnabled] = useState(true);
-  const { playSound, playBackgroundMusic, stopBackgroundMusic } = useSound();
+  const [sfxEnabled, setSfxEnabled] = useState(true);
+  const { playSound, setSfxVolume } = useSound();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -43,21 +43,17 @@ const GameConsole = ({ onStartGame, onViewProgress, progress }: GameConsoleProps
   }, []);
 
   useEffect(() => {
-    if (musicEnabled) {
-      playBackgroundMusic();
-    } else {
-      stopBackgroundMusic();
-    }
-  }, [musicEnabled, playBackgroundMusic, stopBackgroundMusic]);
+    setSfxVolume(sfxEnabled ? 0.5 : 0);
+  }, [sfxEnabled, setSfxVolume]);
 
   const handleButtonClick = (callback: () => void, soundName: string = 'click') => {
-    playSound(soundName);
+    if (sfxEnabled) playSound(soundName);
     callback();
   };
 
-  const toggleMusic = () => {
-    setMusicEnabled(!musicEnabled);
-    playSound('click');
+  const toggleSfx = () => {
+    setSfxEnabled(!sfxEnabled);
+    if (!sfxEnabled) playSound('click');
   };
 
   return (
@@ -73,11 +69,11 @@ const GameConsole = ({ onStartGame, onViewProgress, progress }: GameConsoleProps
               <span>Time: {currentTime}</span>
               <span>Stars: ⭐ {progress.totalStars}</span>
               <Button
-                onClick={toggleMusic}
+                onClick={toggleSfx}
                 className="bg-purple-500 hover:bg-purple-600 text-white p-2"
                 size="sm"
               >
-                {musicEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+                {sfxEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
               </Button>
             </div>
           </div>
