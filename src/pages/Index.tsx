@@ -29,7 +29,8 @@ const Index = () => {
       math: { levelsCompleted: 0, totalLevels: 5, stars: 0 },
       word: { levelsCompleted: 0, totalLevels: 5, stars: 0 },
       puzzle: { levelsCompleted: 0, totalLevels: 5, stars: 0 },
-      art: { levelsCompleted: 0, totalLevels: 5, stars: 0 }
+      art: { levelsCompleted: 0, totalLevels: 5, stars: 0 },
+      minigames: { levelsCompleted: 0, totalLevels: 8, stars: 0 }
     },
     badges: [],
     currentLevel: 1

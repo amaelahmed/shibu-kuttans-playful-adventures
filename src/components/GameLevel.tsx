@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +7,10 @@ import MathLevel from './levels/MathLevel';
 import WordLevel from './levels/WordLevel';
 import PuzzleLevel from './levels/PuzzleLevel';
 import ArtLevel from './levels/ArtLevel';
+import MemoryMatchLevel from './levels/MemoryMatchLevel';
+import ColorMatchLevel from './levels/ColorMatchLevel';
+import ShapePuzzleLevel from './levels/ShapePuzzleLevel';
+import CountLearnLevel from './levels/CountLearnLevel';
 
 interface GameLevelProps {
   world: string;
@@ -27,7 +30,8 @@ const GameLevel = ({ world, level, onComplete, onBack, onNextLevel }: GameLevelP
       math: ["Let's solve some fun math problems!", "Numbers are everywhere!", "You're great at math!"],
       word: ["Time for word adventures!", "Reading is so much fun!", "You're becoming a great reader!"],
       puzzle: ["Let's solve puzzles together!", "Think carefully and you'll get it!", "Your brain is amazing!"],
-      art: ["Time to be creative!", "Colors make everything beautiful!", "You're such a talented artist!"]
+      art: ["Time to be creative!", "Colors make everything beautiful!", "You're such a talented artist!"],
+      minigames: ["Let's play some quick fun games!", "These mini-games are so exciting!", "You're getting better at every game!"]
     };
     
     setShibuDialogue(dialogues[world as keyof typeof dialogues]?.[0] || "Let's have fun learning!");
@@ -50,6 +54,22 @@ const GameLevel = ({ world, level, onComplete, onBack, onNextLevel }: GameLevelP
         return <PuzzleLevel level={level} onComplete={handleLevelComplete} />;
       case 'art':
         return <ArtLevel level={level} onComplete={handleLevelComplete} />;
+      case 'minigames':
+        const miniGameTypes = ['memory', 'color', 'shape', 'count'];
+        const gameType = miniGameTypes[(level - 1) % 4];
+        
+        switch (gameType) {
+          case 'memory':
+            return <MemoryMatchLevel level={level} onComplete={handleLevelComplete} />;
+          case 'color':
+            return <ColorMatchLevel level={level} onComplete={handleLevelComplete} />;
+          case 'shape':
+            return <ShapePuzzleLevel level={level} onComplete={handleLevelComplete} />;
+          case 'count':
+            return <CountLearnLevel level={level} onComplete={handleLevelComplete} />;
+          default:
+            return <MemoryMatchLevel level={level} onComplete={handleLevelComplete} />;
+        }
       default:
         return <div>Level content coming soon!</div>;
     }
@@ -60,7 +80,8 @@ const GameLevel = ({ world, level, onComplete, onBack, onNextLevel }: GameLevelP
       math: '🔢',
       word: '📚',
       puzzle: '🧩',
-      art: '🎨'
+      art: '🎨',
+      minigames: '🎮'
     };
     return emojis[world as keyof typeof emojis] || '🎮';
   };
@@ -128,7 +149,7 @@ const GameLevel = ({ world, level, onComplete, onBack, onNextLevel }: GameLevelP
         <Card className="bg-white/95 shadow-2xl border-4 border-white/50 mb-6 animate-fade-in">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl text-purple-800 capitalize">
-              {world} World - Level {level}
+              {world === 'minigames' ? 'Mini Games' : `${world} World`} - Level {level}
             </CardTitle>
           </CardHeader>
           <CardContent>

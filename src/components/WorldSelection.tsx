@@ -1,7 +1,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowDown, Book, Calculator, Puzzle, Pencil } from 'lucide-react';
+import { ArrowDown, Book, Calculator, Puzzle, Pencil, Gamepad2 } from 'lucide-react';
 import { GameProgress } from '@/pages/Index';
 
 interface WorldSelectionProps {
@@ -43,6 +43,14 @@ const WorldSelection = ({ onSelectWorld, onBack, progress }: WorldSelectionProps
       color: 'from-pink-400 to-pink-600',
       description: 'Colors, creativity, and artistic fun!',
       emoji: '🎨'
+    },
+    {
+      id: 'minigames',
+      name: 'Mini Games',
+      icon: Gamepad2,
+      color: 'from-yellow-400 to-orange-600',
+      description: 'Quick fun games for memory, colors, and shapes!',
+      emoji: '🎮'
     }
   ];
 
@@ -69,7 +77,7 @@ const WorldSelection = ({ onSelectWorld, onBack, progress }: WorldSelectionProps
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto flex-1">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto flex-1">
         {worlds.map((world) => {
           const worldProgress = progress.worldProgress[world.id];
           const Icon = world.icon;
@@ -95,10 +103,10 @@ const WorldSelection = ({ onSelectWorld, onBack, progress }: WorldSelectionProps
               <CardContent className="p-6 bg-white">
                 <div className="flex justify-between items-center mb-4">
                   <div className="text-lg font-semibold text-gray-700">
-                    Progress: {worldProgress.levelsCompleted}/{worldProgress.totalLevels} levels
+                    Progress: {worldProgress?.levelsCompleted || 0}/{worldProgress?.totalLevels || 5} levels
                   </div>
                   <div className="flex items-center text-yellow-600">
-                    ⭐ {worldProgress.stars} stars
+                    ⭐ {worldProgress?.stars || 0} stars
                   </div>
                 </div>
                 
@@ -106,7 +114,7 @@ const WorldSelection = ({ onSelectWorld, onBack, progress }: WorldSelectionProps
                 <div className="bg-gray-200 rounded-full h-4 mb-4">
                   <div 
                     className={`bg-gradient-to-r ${world.color} h-4 rounded-full transition-all duration-500`}
-                    style={{ width: `${(worldProgress.levelsCompleted / worldProgress.totalLevels) * 100}%` }}
+                    style={{ width: `${((worldProgress?.levelsCompleted || 0) / (worldProgress?.totalLevels || 5)) * 100}%` }}
                   ></div>
                 </div>
                 
