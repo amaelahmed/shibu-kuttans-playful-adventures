@@ -1,7 +1,7 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useSound } from '@/hooks/useSound';
 
 interface ColorMatchLevelProps {
   level: number;
@@ -18,6 +18,7 @@ const ColorMatchLevel = ({ level, onComplete }: ColorMatchLevelProps) => {
   const [showFeedback, setShowFeedback] = useState(false);
 
   const totalQuestions = 8;
+  const { playSound } = useSound();
 
   const colors = [
     { color: '#FF0000', name: 'Red' },
@@ -62,8 +63,10 @@ const ColorMatchLevel = ({ level, onComplete }: ColorMatchLevelProps) => {
     if (isCorrect) {
       setScore(prev => prev + 1);
       setFeedback(`🎉 Correct! That's ${selectedColor.name}!`);
+      playSound('success');
     } else {
       setFeedback(`💡 That's ${selectedColor.name}. The correct answer was ${targetColorName}!`);
+      playSound('wrong');
     }
     
     setShowFeedback(true);
@@ -72,6 +75,13 @@ const ColorMatchLevel = ({ level, onComplete }: ColorMatchLevelProps) => {
     setTimeout(() => {
       if (questionsCompleted + 1 >= totalQuestions) {
         const stars = score >= 7 ? 3 : score >= 5 ? 2 : 1;
+        playSound('levelComplete');
+        // Play star sounds based on stars earned
+        setTimeout(() => {
+          for (let i = 0; i < stars; i++) {
+            setTimeout(() => playSound('star'), i * 200);
+          }
+        }, 500);
         onComplete(stars);
       } else {
         generateQuestion();
