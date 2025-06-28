@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -25,7 +24,7 @@ const MemoryMatchLevel = ({ level, onComplete }: MemoryMatchLevelProps) => {
     const pairCount = Math.min(4 + level, 8); // Start with 4 pairs, max 8
     const gameEmojis = emojis.slice(0, pairCount);
     const cardPairs = [...gameEmojis, ...gameEmojis];
-    
+
     // Shuffle cards
     const shuffledCards = cardPairs
       .map((emoji, index) => ({
@@ -35,7 +34,7 @@ const MemoryMatchLevel = ({ level, onComplete }: MemoryMatchLevelProps) => {
         matched: false
       }))
       .sort(() => Math.random() - 0.5);
-    
+
     setCards(shuffledCards);
     setFlippedCards([]);
     setMatchedPairs(0);
@@ -43,44 +42,48 @@ const MemoryMatchLevel = ({ level, onComplete }: MemoryMatchLevelProps) => {
     setGameStarted(true);
   };
 
-  const handleCardClick = (cardId: number) => {
+  const handleCardClick = (index: number) => {
     if (flippedCards.length === 2) return;
-    if (cards[cardId].flipped || cards[cardId].matched) return;
+    if (cards[index].flipped || cards[index].matched) return;
 
-    const newFlippedCards = [...flippedCards, cardId];
+    const newFlippedCards = [...flippedCards, index];
     setFlippedCards(newFlippedCards);
-    
-    const newCards = cards.map(card => 
-      card.id === cardId ? { ...card, flipped: true } : card
+
+    const newCards = cards.map((card, i) =>
+      i === index ? { ...card, flipped: true } : card
     );
     setCards(newCards);
 
     if (newFlippedCards.length === 2) {
       setMoves(prev => prev + 1);
-      
-      const [firstId, secondId] = newFlippedCards;
-      const firstCard = newCards[firstId];
-      const secondCard = newCards[secondId];
+
+      const [firstIndex, secondIndex] = newFlippedCards;
+      const firstCard = newCards[firstIndex];
+      const secondCard = newCards[secondIndex];
 
       if (firstCard.emoji === secondCard.emoji) {
         // Match found
         setTimeout(() => {
-          setCards(prev => prev.map(card => 
-            card.id === firstId || card.id === secondId 
-              ? { ...card, matched: true } 
-              : card
-          ));
+          setCards(prev =>
+            prev.map((card, i) =>
+              i === firstIndex || i === secondIndex
+                ? { ...card, matched: true }
+                : card
+            )
+          );
           setMatchedPairs(prev => prev + 1);
           setFlippedCards([]);
         }, 1000);
       } else {
         // No match
         setTimeout(() => {
-          setCards(prev => prev.map(card => 
-            card.id === firstId || card.id === secondId 
-              ? { ...card, flipped: false } 
-              : card
-          ));
+          setCards(prev =>
+            prev.map((card, i) =>
+              i === firstIndex || i === secondIndex
+                ? { ...card, flipped: false }
+                : card
+            )
+          );
           setFlippedCards([]);
         }, 1500);
       }
@@ -109,7 +112,7 @@ const MemoryMatchLevel = ({ level, onComplete }: MemoryMatchLevelProps) => {
       <div className={`grid gap-4 mx-auto max-w-2xl ${
         cards.length <= 12 ? 'grid-cols-4' : 'grid-cols-4 md:grid-cols-6'
       }`}>
-        {cards.map((card) => (
+        {cards.map((card, index) => (
           <Card
             key={card.id}
             className={`aspect-square cursor-pointer transition-all duration-300 ${
@@ -117,7 +120,7 @@ const MemoryMatchLevel = ({ level, onComplete }: MemoryMatchLevelProps) => {
                 ? 'bg-white border-blue-400'
                 : 'bg-gradient-to-br from-purple-400 to-purple-600 hover:from-purple-500 hover:to-purple-700'
             }`}
-            onClick={() => handleCardClick(card.id)}
+            onClick={() => handleCardClick(index)}
           >
             <CardContent className="p-0 h-full flex items-center justify-center">
               {card.flipped || card.matched ? (
@@ -145,3 +148,4 @@ const MemoryMatchLevel = ({ level, onComplete }: MemoryMatchLevelProps) => {
 };
 
 export default MemoryMatchLevel;
+
