@@ -1,10 +1,10 @@
+
 import { useState, useEffect } from 'react';
 import GameConsole from '@/components/GameConsole';
 import WorldSelection from '@/components/WorldSelection';
 import GameLevel from '@/components/GameLevel';
 import ProgressDashboard from '@/components/ProgressDashboard';
 import { useToast } from '@/hooks/use-toast';
-import { useSound } from '@/hooks/useSound';
 
 export interface GameProgress {
   totalStars: number;
@@ -37,7 +37,6 @@ const Index = () => {
   });
 
   const { toast } = useToast();
-  const { playSound } = useSound();
 
   useEffect(() => {
     const savedProgress = localStorage.getItem('shibu-kuttan-progress');
@@ -77,7 +76,6 @@ const Index = () => {
     
     if (totalCompleted >= 5 && !newProgress.badges.includes('first-steps')) {
       newProgress.badges.push('first-steps');
-      playSound('badge');
       toast({
         title: "🎉 New Badge Earned!",
         description: "First Steps - Complete 5 levels!"
@@ -86,7 +84,6 @@ const Index = () => {
     
     if (newProgress.totalStars >= 50 && !newProgress.badges.includes('star-collector')) {
       newProgress.badges.push('star-collector');
-      playSound('badge');
       toast({
         title: "⭐ New Badge Earned!",
         description: "Star Collector - Earn 50 stars!"

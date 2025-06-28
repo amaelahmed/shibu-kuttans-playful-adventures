@@ -2,10 +2,9 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Star, Play, Trophy, Volume2, VolumeX } from 'lucide-react';
+import { Star, Play, Trophy } from 'lucide-react';
 import ShibuKuttan from './ShibuKuttan';
 import { GameProgress } from '@/pages/Index';
-import { useSound } from '@/hooks/useSound';
 
 interface GameConsoleProps {
   onStartGame: () => void;
@@ -16,8 +15,6 @@ interface GameConsoleProps {
 const GameConsole = ({ onStartGame, onViewProgress, progress }: GameConsoleProps) => {
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
   const [shibuDialogue, setShibuDialogue] = useState("Hi there! I'm Shibu Kuttan, ready for some fun learning?");
-  const [sfxEnabled, setSfxEnabled] = useState(true);
-  const { playSound, setSfxVolume } = useSound();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -42,20 +39,6 @@ const GameConsole = ({ onStartGame, onViewProgress, progress }: GameConsoleProps
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    setSfxVolume(sfxEnabled ? 0.5 : 0);
-  }, [sfxEnabled, setSfxVolume]);
-
-  const handleButtonClick = (callback: () => void, soundName: string = 'click') => {
-    if (sfxEnabled) playSound(soundName);
-    callback();
-  };
-
-  const toggleSfx = () => {
-    setSfxEnabled(!sfxEnabled);
-    if (!sfxEnabled) playSound('click');
-  };
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
       <Card className="w-full max-w-4xl bg-gradient-to-br from-yellow-200 to-orange-300 border-4 border-orange-400 shadow-2xl animate-scale-in">
@@ -68,13 +51,6 @@ const GameConsole = ({ onStartGame, onViewProgress, progress }: GameConsoleProps
             <div className="text-lg text-purple-600 font-semibold flex items-center justify-center space-x-4">
               <span>Time: {currentTime}</span>
               <span>Stars: ⭐ {progress.totalStars}</span>
-              <Button
-                onClick={toggleSfx}
-                className="bg-purple-500 hover:bg-purple-600 text-white p-2"
-                size="sm"
-              >
-                {sfxEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-              </Button>
             </div>
           </div>
 
@@ -104,7 +80,7 @@ const GameConsole = ({ onStartGame, onViewProgress, progress }: GameConsoleProps
           {/* Console Controls */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Button
-              onClick={() => handleButtonClick(onStartGame, 'success')}
+              onClick={onStartGame}
               className="h-20 text-2xl font-bold bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white shadow-lg transform hover:scale-105 transition-all duration-200"
             >
               <Play className="w-8 h-8 mr-3" />
@@ -112,7 +88,7 @@ const GameConsole = ({ onStartGame, onViewProgress, progress }: GameConsoleProps
             </Button>
             
             <Button
-              onClick={() => handleButtonClick(onViewProgress)}
+              onClick={onViewProgress}
               className="h-20 text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-lg transform hover:scale-105 transition-all duration-200"
             >
               <Trophy className="w-8 h-8 mr-3" />
@@ -121,7 +97,7 @@ const GameConsole = ({ onStartGame, onViewProgress, progress }: GameConsoleProps
             
             <Button
               className="h-20 text-2xl font-bold bg-gradient-to-r from-purple-400 to-purple-600 hover:from-purple-500 hover:to-purple-700 text-white shadow-lg transform hover:scale-105 transition-all duration-200"
-              onClick={() => handleButtonClick(() => setShibuDialogue("Settings coming soon! Keep playing for now!"))}
+              onClick={() => setShibuDialogue("Settings coming soon! Keep playing for now!")}
             >
               ⚙️ Settings
             </Button>
